@@ -4,59 +4,70 @@ import com.mik.catalog.dao.GroupDAO;
 import com.mik.catalog.model.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
  * Created by mikitjuk on 13.01.16.
  */
-@Controller
+@RestController
 public class GroupController {
 
     @Autowired
     @Qualifier("groupDAO")
     private GroupDAO groupDAO;
 
-    @RequestMapping(value = "/group", method = RequestMethod.GET)
-    public ModelAndView handleRequest() {
+    // получение списка груп
+    @RequestMapping(value = "/group/list", method = RequestMethod.GET)
+    public List<Group> groupList() {
         List<Group> listUsers = groupDAO.listAll();
-        ModelAndView model = new ModelAndView("groupList");
-        model.addObject("groupList", listUsers);
-        return model;
+        return listUsers.size() == 0 ? null : groupDAO.listAll();
     }
 
-//    @RequestMapping(value = "/new", method = RequestMethod.GET)
-//    public ModelAndView newUser() {
-//        ModelAndView model = new ModelAndView("UserForm");
-//        model.addObject("user", new User());
-//        return model;
-//    }
-//
-//    @RequestMapping(value = "/edit", method = RequestMethod.GET)
-//    public ModelAndView editUser(HttpServletRequest request) {
-//        int userId = Integer.parseInt(request.getParameter("id"));
-//        User user = userDao.get(userId);
-//        ModelAndView model = new ModelAndView("UserForm");
-//        model.addObject("user", user);
-//        return model;
-//    }
-//
-//    @RequestMapping(value = "/delete", method = RequestMethod.GET)
-//    public ModelAndView deleteUser(HttpServletRequest request) {
-//        int userId = Integer.parseInt(request.getParameter("id"));
-//        userDao.delete(userId);
-//        return new ModelAndView("redirect:/");
-//    }
-//
-//    @RequestMapping(value = "/save", method = RequestMethod.POST)
-//    public ModelAndView saveUser(@ModelAttribute User user) {
-//        userDao.saveOrUpdate(user);
-//        return new ModelAndView("redirect:/");
-//    }
-//
+    // создание группы
+    @RequestMapping(value = "/group/create", method = RequestMethod.POST)
+    public String newGroup(@RequestBody Group group) {
 
+        String retStr;
+        if (groupDAO.findGroup(group).size() > 0 )
+            retStr = "find similar - not add";
+        else if (group.getDept() == null || group.getName() == null)
+            retStr = "not all fields are filled";
+        else
+            retStr = "Group add id = " + groupDAO.create(group);
+
+        return retStr;
+    }
+
+    // получение группы по id
+    @RequestMapping(value = "/group/read", method = RequestMethod.GET)
+    public Group readGroup(@RequestParam Integer id) {
+        return groupDAO.read(id);
+    }
+
+    // обновление группы
+    @RequestMapping(value = "/group/update", method = RequestMethod.POST)
+    public String editGroup(@RequestBody Group group) {
+        //?? - обновленеи не хорошо
+        groupDAO.update(group);
+        return "Update - ok";
+    }
+
+    // удаление группы
+    @RequestMapping(value = "/group/delete", method = RequestMethod.GET)
+    public String editGroup(@RequestParam Integer id) {
+
+        String retStr;
+        Group group = groupDAO.read(id);
+        //!!нужна проверка перед удаление по продуктам!!!
+        if (group == null) {
+            retStr = "not find group id = " + id;
+        } else {
+            groupDAO.delete(group);
+            retStr = "Group deleted successfully!";
+        }
+
+        return retStr;
+    }
 }

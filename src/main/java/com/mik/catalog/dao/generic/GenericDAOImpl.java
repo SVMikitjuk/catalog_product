@@ -15,12 +15,12 @@ import java.util.List;
  * Created by mikitjuk on 13.01.16.
  */
 @Repository
+@Transactional
 public abstract class GenericDAOImpl<T, PK extends Serializable> implements GenericDAO<T, PK>{
 
     @Autowired
     @Qualifier("sessionFactory")
     private SessionFactory sessionFactory;
-//    static final Logger logger = LoggerFactory.getLogger(GenericMySqlDAOImpl.class);
 
     private Class<T> entityClass;
 
@@ -30,38 +30,32 @@ public abstract class GenericDAOImpl<T, PK extends Serializable> implements Gene
     }
 
     @Override
-    @Transactional
     @SuppressWarnings("unchecked")
     public PK create(T o){
         return (PK) getSession().save(o);
     }
 
     @Override
-    @Transactional
     @SuppressWarnings("unchecked")
     public T read(PK id) {
         return (T) getSession().get(entityClass, id);
     }
 
     @Override
-    @Transactional
     public void update(T o) {
         getSession().update(o);
     }
 
     @Override
-    @Transactional
     public void delete(T o) {
         getSession().delete(o);
     }
 
     @Override
-    @Transactional
     public List<T> listAll() {
         @SuppressWarnings("unchecked")
         List<T> listUser = (List<T>) sessionFactory.getCurrentSession()
                 .createCriteria(entityClass).list();
-                //.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
 
         return listUser;
     }
@@ -71,5 +65,4 @@ public abstract class GenericDAOImpl<T, PK extends Serializable> implements Gene
         session.setFlushMode(FlushMode.AUTO);
         return session;
     }
-
 }

@@ -11,6 +11,7 @@
     <properties>
         <java-version>1.8</java-version>
         <org.springframework-version>4.2.3.RELEASE</org.springframework-version>
+        <jackson-version>2.6.4</jackson-version>
     </properties>
 
     <dependencies>
@@ -20,7 +21,6 @@
             <artifactId>spring-context</artifactId>
             <version>${org.springframework-version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
@@ -30,7 +30,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${org.springframework-version}</version>
-            <!--<entityClass>jar</entityClass>-->
             <scope>compile</scope>
         </dependency>
 
@@ -73,9 +72,17 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.30</version>
         </dependency>
+
+        <!--JSON-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
+
     </dependencies>
+
     <build>
-        <!-- Output classes directly into the webapp, so that IDEs and "mvn process-classes" update them in DevMode -->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
 
         <plugins>
@@ -97,4 +104,6 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build></project>
+    </build>
+
+</project>

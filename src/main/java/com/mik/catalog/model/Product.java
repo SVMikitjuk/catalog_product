@@ -1,5 +1,7 @@
 package com.mik.catalog.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -7,14 +9,15 @@ import java.io.Serializable;
  * Created by mikitjuk on 13.01.16.
  */
 @Entity
-@Table(name = "product")
+@Table(name = "product", schema = "", catalog = "addrBook")
 public class Product implements Serializable {
     private Integer id;
     private String name;
+    @JsonProperty("group")
     private Group groupByIdGroup;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false, insertable = true, updatable = true)
     public Integer getId() {
         return id;
