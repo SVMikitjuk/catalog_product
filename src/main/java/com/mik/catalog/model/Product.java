@@ -11,6 +11,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "product", schema = "", catalog = "addrBook")
 public class Product implements Serializable {
+
     private Integer id;
     private String name;
     @JsonProperty("group")
